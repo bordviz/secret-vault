@@ -1,0 +1,18 @@
+env: local
+
+database:
+  host: localhost
+  port: 5445
+  user: postgres
+  password: somesecretpassword
+  name: vault
+  sslmode: disable
+  attemps: 5
+  delay: 5s
+  timeout: 5s
+
+http-server:
+  host: localhost
+  port: 8200
+  timeout: 5s
+  idle_timeout: 60s
