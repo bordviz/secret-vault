@@ -33,7 +33,7 @@ type CreateVaultTokenDTO struct {
 
 func (s *SecretCreateModel) Validate() error {
 	if err := validator.Validate(s); err != nil {
-		return err
+		return fmt.Errorf("validation error: %s", err)
 	}
 	for k, v := range s.Data {
 		if strings.ReplaceAll(k, " ", "") == "" || strings.ReplaceAll(v, " ", "") == "" {
@@ -62,7 +62,7 @@ func (s *SecretCreateModel) ConvertToDTO() SecretCreateDTO {
 
 func (c *CreateVaultTokenDTO) Validate() error {
 	if err := validator.Validate(c); err != nil {
-		return err
+		return fmt.Errorf("validation error: %s", err)
 	}
 	return nil
 }
