@@ -3,11 +3,12 @@ package validator
 import (
 	"fmt"
 	"reflect"
+	"strings"
 
 	"github.com/go-playground/validator/v10"
 )
 
-func Validate(model interface{}) []string {
+func Validate(model interface{}) string {
 	var errMsgs []string
 
 	validate := validator.New()
@@ -27,7 +28,7 @@ func Validate(model interface{}) []string {
 				errMsgs = append(errMsgs, fmt.Sprintf("field %s is not valid", errMsg.Field()))
 			}
 		}
-		return errMsgs
+		return strings.Join(errMsgs, ", ")
 	}
-	return nil
+	return ""
 }

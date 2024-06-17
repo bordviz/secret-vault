@@ -15,7 +15,6 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/render"
-	"github.com/go-playground/validator/v10"
 )
 
 var (
@@ -29,11 +28,7 @@ type RootHandlerClient struct {
 }
 
 func AddRootRouter(r chi.Router, rootClient RootDB, log *slog.Logger, cfg *config.Config) func(r chi.Router) {
-	client := RootHandlerClient{
-		rootDBClient: rootClient,
-		log:          log,
-		secret:       cfg.Secret,
-	}
+	client := NewRootHandlerClient(rootClient, log, cfg.Secret)
 
 	return func(r chi.Router) {
 		r.Use(mwAuth.RootAuth(log, cfg.RootToken))
@@ -41,6 +36,14 @@ func AddRootRouter(r chi.Router, rootClient RootDB, log *slog.Logger, cfg *confi
 		r.Post("/create", client.CreateVault(context.TODO()))
 		r.Get("/get/{id}", client.GetVault(context.TODO()))
 		r.Post("/create-token", client.CreateVaultToken(context.TODO()))
+	}
+}
+
+func NewRootHandlerClient(rootClient RootDB, log *slog.Logger, secret string) *RootHandlerClient {
+	return &RootHandlerClient{
+		rootDBClient: rootClient,
+		log:          log,
+		secret:       secret,
 	}
 }
 
@@ -61,9 +64,8 @@ func (h *RootHandlerClient) CreateVault(ctx context.Context) http.HandlerFunc {
 			return
 		}
 		if err := model.Validate(); err != nil {
-			validErr := err.(validator.ValidationErrors)
-			validErrDetail := handlers.ValidationError(w, r, validErr)
-			h.log.Error("validate error", slog.String("op", op), slog.String("detail", validErrDetail))
+			h.log.Error("validate error", sl.OpErr(op, err))
+			handlers.ErrorResponse(w, r, 422, err.Error())
 			return
 		}
 
@@ -142,9 +144,8 @@ func (h *RootHandlerClient) CreateVaultToken(ctx context.Context) http.HandlerFu
 		}
 
 		if err := model.Validate(); err != nil {
-			validErr := err.(validator.ValidationErrors)
-			validErrDetail := handlers.ValidationError(w, r, validErr)
-			h.log.Error("validate error", slog.String("op", op), slog.String("detail", validErrDetail))
+			h.log.Error("validate error", sl.OpErr(op, err))
+			handlers.ErrorResponse(w, r, 422, err.Error())
 			return
 		}
 
