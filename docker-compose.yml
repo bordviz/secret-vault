@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16
+    container_name: db_app
+    command: -p 5432
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: vlt-user
+      POSTGRES_PASSWORD: vault333
+      POSTGRES_DB: Vault
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d postgres -U postgres" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  go:
+    build:
+      context: .
+    env_file:
+      - .env
+    container_name: vault
+    command: ["/vault/docker/app.sh"]
+    ports:
+      - 8200:8200
+    depends_on:
+      db:
+        condition: service_healthy
+
+
+volumes:
+  pgdata:
+

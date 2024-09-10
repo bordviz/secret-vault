@@ -1,0 +1,7 @@
+version: "3"
+
+tasks:
+  clear:
+    description: "Clear database"
+    cmds:
+      - go run cmd/migrations/main.go --action=down && go run cmd/migrations/main.go --action=up

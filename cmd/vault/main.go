@@ -63,14 +63,14 @@ func main() {
 	router.Route("/user", user.AddUserRouter(router, dbClient, log, cfg))
 
 	srv := &http.Server{
-		Addr:         fmt.Sprintf("%s:%d", cfg.HTTPServer.Host, cfg.HTTPServer.Port),
+		Addr:         fmt.Sprintf(":%d", cfg.HTTPServer.Port),
 		Handler:      router,
 		ReadTimeout:  cfg.HTTPServer.Timeout,
 		WriteTimeout: cfg.HTTPServer.Timeout,
 		IdleTimeout:  cfg.HTTPServer.IdleTimeout,
 	}
 
-	log.Info("Server statup", "host", cfg.HTTPServer.Host, "port", cfg.HTTPServer.Port)
+	log.Info("Server statup", "port", cfg.HTTPServer.Port)
 	if err := srv.ListenAndServe(); err != nil {
 		log.Error("Failed to start server", sl.Err(err))
 		return
