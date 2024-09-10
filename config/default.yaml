@@ -1,18 +1,18 @@
 env: local
+migrations_path: ./migrations
 
 database:
-  host: localhost
+  host: db
   port: 5432
-  user: postgres
-  password: postgres
-  name: postgres
+  user: vlt-user
+  password: vault-pass333
+  name: vault
   sslmode: disable
   attemps: 5
   delay: 5s
   timeout: 5s
 
 http-server:
-  host: localhost
   port: 8200
   timeout: 5s
   idle_timeout: 60s

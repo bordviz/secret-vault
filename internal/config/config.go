@@ -10,11 +10,12 @@ import (
 )
 
 type Config struct {
-	Env        string `yaml:"env" env-required:"true"`
-	RootToken  string
-	Secret     string
-	Database   `yaml:"database" env-required:"true"`
-	HTTPServer `yaml:"http-server" env-required:"true"`
+	Env            string `yaml:"env" env-required:"true"`
+	RootToken      string
+	Secret         string
+	MigrationsPath string `yaml:"migrations_path" env-required:"true"`
+	Database       `yaml:"database" env-required:"true"`
+	HTTPServer     `yaml:"http-server" env-required:"true"`
 }
 
 type Database struct {
@@ -30,7 +31,6 @@ type Database struct {
 }
 
 type HTTPServer struct {
-	Host        string        `yaml:"host" env-required:"true"`
 	Port        int           `yaml:"port" env-required:"true"`
 	Timeout     time.Duration `yaml:"timeout" env-required:"true"`
 	IdleTimeout time.Duration `yaml:"idle_timeout" env-required:"true"`
